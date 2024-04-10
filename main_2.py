@@ -1,40 +1,54 @@
-import sys # don't use quit() or exit() in production code. Use sys.exit
+import sys
 
-# Make program repeat:
-while True:
-
-    # get user input for file:
-    file_variable = input('''
-What file would you like to search for?:
-a) 60s_music file
-b) athletes file
-x) to exit
-''')
-
-    # process user input
-    if file_variable == 'x':
-        sys.exit() # this requires
-    elif file_variable == 'a':
-        file_variable = "60s_music.csv"
-    elif file_variable == 'b':
-        file_variable = "athletes.csv"
-    else:
-        print("Invalid option. Please select a, b, or x")
-        continue
-
-    # enter a search term this // is a global variable
-    search_variable = input(f"Enter the search term for {file_variable} file: ")
-    search_variable = search_variable.title() # Make it so that the user can enter lower-case term.
-
-    # go to 02_search_for_term.py to continue .....
-    # find (file_variable, search_variable) ....
+def search_file(file_variable, search_term):
+    # Open the file and read the contents
     with open(file_variable, "r") as file:
         content = file.read()
 
-    # now the file is in the memory buffer as content
-    # Next check to see if the search_variable is in the content buffer:
-    if search_variable in content:
-        # if the file print that it is in the file AND
-        # if user wants to see the entries for the term
-        print(f"Your search term {search_variable} exists in the {file_variable} file!")
-        see_entries = input("Would you like to see the entries? (y or n)")
+    # Check if the search term is in the file content
+    if search_term in content:
+        print(f"Your search term '{search_term}' exists in the '{file_variable}' file!")
+        decision = input("Would you like to see the entries? (y or n): ").lower()
+
+        # Show entries if the user chooses 'y'
+        if decision == 'y':
+            print(f"Here are all of the entries with the term '{search_term}':")
+            with open(file_variable, 'r') as file:
+                for line in file:
+                    if search_term in line:
+                        print(line.strip())
+        elif decision == 'n':
+            print('Goodbye')
+            sys.exit()
+        else:
+            print("Invalid option. Please enter 'y' or 'n'.")
+    else:
+        print(f"The term '{search_term}' does not exist in '{file_variable}'.")
+
+# Main program loop
+while True:
+    print("What file would you like to search for?")
+    print("a) 60s_music file")
+    print("b) athletes file")
+    print("x) to exit")
+    file_choice = input("Please select an option: ").strip().lower()
+
+    # Map the user input to the respective file names
+    file_map = {'a': '60s-music.csv', 'b': 'athletes.csv', 'x': sys.exit}
+    file_variable = file_map.get(file_choice)
+
+    # Exit if the choice is 'x'
+    if file_choice == 'x':
+        print("Exiting the program.")
+        sys.exit()
+
+    # If the file choice is invalid, continue the loop
+    if file_variable is None:
+        print("Invalid option. Please select a, b, or x.")
+        continue
+
+    # Get the search term from the user
+    search_variable = input(f"Enter the search term for '{file_variable}': ").title()
+
+    # Call the search function
+    search_file(file_variable, search_variable)
