@@ -32,3 +32,11 @@ def find(file_variable, search_variable):
     with open(file_variable, "r") as file:
         content = file.read()
 # now the file is in the memory buffer as content
+
+# Next check to see if the search_variable is in the content buffer:
+    if search_variable in content:
+        
+        # if the file print that it is in the file AND
+        # if user wants to see the entries for the term
+            print(f"Your search term {search_variable} exists in the {file_variable} file!")
+            see_entries = input("Would you like to see the entries? (y or n)?")
